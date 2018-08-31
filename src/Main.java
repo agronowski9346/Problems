@@ -38,11 +38,25 @@ public class Main {
 		
 		System.out.println(lcsBottomUp(s1.toCharArray(), s2.toCharArray(), s1.length(), s2.length()));
 		*/
+		/*
 		int[] arr = {1,2,3};
 		LinkedList<Integer> l = new LinkedList<Integer>();
 		powersetRec(arr,0,l);
 		
 		System.out.println(set);
+		*/
+		
+		/*
+		int[] values = {60,100,120};
+		int[] weights = {10,20,30};
+		System.out.println(knapSack(weights, values, 50, 0));
+		*/
+		
+		int[] values = {1,5,8,9,10,17,17,20,1,5,8,9,10,17,17,20,1,5,8,9,10,17,17,20,1,5,8,9,10,17,17,20,1,5,8,9,10,17,17,20,1,5,8,9,10,17,17,20,1,5,8,9,10,17,17,20};
+	//	System.out.println(rodCutting(109, values, 1));
+		
+		System.out.println(rodCuttingMemo(109, values, 1));
+		
 	}
 	//Naive implementation of coinchange
 	public static int coinChange(int[] coins, int n, int index) {
@@ -122,10 +136,11 @@ public class Main {
 		}
 		return arr[m][n];
 	}
-	
+	/*
 	static LinkedList<LinkedList<Integer>> set = new LinkedList<LinkedList<Integer>>();
 	public static void powersetRec(int[] arr,int index, LinkedList<Integer> list) {
 		System.out.println("powersetRec({1,2,3}" + ", " + index + ", " + list);
+		System.out.println(set);
 		if(index == arr.length) {
 			set.add(list);
 		}
@@ -134,6 +149,40 @@ public class Main {
 			powersetRec(arr,index+1,list);
 			
 			powersetRec(arr,index+1,list);	
+		}
+	}
+	*/
+	
+	//O(2^n) naive solution for knapSack
+	public static int knapSack(int[] weights, int[] values, int W, int index) {
+		if(W==0 || index >= weights.length) return 0;
+		//invalid state
+		else if(W-weights[index] < 0) return Integer.MIN_VALUE;
+		else {
+			return Math.max((values[index] + knapSack(weights,values, W-weights[index], index+1)), knapSack(weights,values,W,index+1));
+		}
+	}
+	
+	public static int rodCutting(int n, int[] values, int index) {
+		if(n==0 || index>=values.length) return 0;
+		else if(n<0) return Integer.MIN_VALUE;
+		else {
+			return Math.max(values[index-1] + rodCutting(n-index,values, index), rodCutting(n,values,index+1));
+		}
+	}
+	
+	public static int rodCuttingMemo(int n, int[] values, int index) {
+		int[] memo = new int[n+1];
+		return rodCuttingMemoHelper(n,values,index, memo);
+	}
+	
+	public static int rodCuttingMemoHelper(int n, int[] values, int index, int[] memo) {
+		if(n==0 || index>=values.length) return 0;
+		else if(n<0) return Integer.MIN_VALUE;
+		else {
+			if(memo[n] == 0)
+			memo[n] =  Math.max(values[index-1] + rodCuttingMemoHelper(n-index,values, index,memo), rodCuttingMemoHelper(n,values,index+1,memo));
+			return memo[n];
 		}
 	}
 }
